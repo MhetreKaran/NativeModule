@@ -3,6 +3,7 @@ import {TurboModuleRegistry} from 'react-native';
 
 export interface Spec extends TurboModule {
   getDeviceModel(): string;
+  getBatteryLevel(): number;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>(
