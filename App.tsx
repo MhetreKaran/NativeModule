@@ -8,8 +8,6 @@ function App() {
   const getBattery = () => {
     const level = MyDeviceInfo.getBatteryLevel();
 
-    console.log('Battery:', level);
-
     setBattery(level);
   };
   const getDevice = () => {
