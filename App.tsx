@@ -1,6 +1,6 @@
-import {Button, Text, View} from 'react-native';
+import {Button, NativeEventEmitter, NativeModule, Text, View} from 'react-native';
 import MyDeviceInfo from './specs/NativeMyDeviceInfo';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function App() {
   const [battery, setBattery] = useState<number | null>(null);
@@ -15,6 +15,32 @@ function App() {
 
     console.log('Device Model:', model);
   };
+  const batteryLevel = MyDeviceInfo.getBatteryLevel();
+
+  useEffect(() => {
+
+    const eventEmitter =
+      new NativeEventEmitter(MyDeviceInfo as NativeModule);
+
+    const subscription =
+      eventEmitter.addListener(
+        'batteryChanged',
+        (level: any) => {
+
+          console.log(
+            'Battery changed:',
+            level,
+          );
+
+          setBattery(level);
+        },
+      );
+
+    return () => {
+      subscription.remove();
+    };
+
+  }, []);
 
   return (
     <View
@@ -32,8 +58,8 @@ function App() {
         onPress={getBattery}
       />
 
-      <Text>
-        Battery: {battery !== null ? `${battery}%` : '--'}
+      <Text style={{ marginTop: 20, fontSize: 20, fontWeight: 'bold' ,color: 'white'}}>
+        Battery: {batteryLevel !== null ? `${batteryLevel}%` : '--'}
       </Text>
     </View>
   );
